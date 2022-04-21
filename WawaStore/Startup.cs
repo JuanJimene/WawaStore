@@ -34,8 +34,16 @@ namespace WawaStore
                 services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
                 services.AddTransient<IProductRepository, EFProductRepository>();
-                services.AddMvc(options => options.EnableEndpointRouting = false);
-            }
+                services.AddTransient<IOrderRepository, EFOrderRepository>();
+
+            services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
+            services.AddMvc(options => options.EnableEndpointRouting = false)
+                 .AddNewtonsoftJson();
+                 services.AddMemoryCache();
+                 services.AddSession();
+        }
 
             // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
     
@@ -45,10 +53,30 @@ namespace WawaStore
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
                 app.UseStaticFiles();
+                app.UseSession();
                 app.UseMvc(routes => {
+
                     routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Product}/{action=List}/{id?}");
+                     name: null,
+                     template: "{category}/Page{page:int}",
+                     defaults: new { controller = "Product", action = "List" }
+                 );
+                    routes.MapRoute(
+                        name: null,
+                        template: "Page{page:int}",
+                        defaults: new { controller = "Product", action = "List", page = 1 }
+                    );
+                    routes.MapRoute(
+                        name: null,
+                        template: "{category}",
+                        defaults: new { controller = "Product", action = "List", page = 1 }
+                    );
+                    routes.MapRoute(
+                        name: null,
+                        template: "",
+                        defaults: new { controller = "Product", action = "List", page = 1 });
+
+                    routes.MapRoute(name: null, template: "{controller}/{action}/{id?}");
                 });
 
             }

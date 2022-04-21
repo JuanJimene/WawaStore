@@ -3,11 +3,27 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" asp-href-include="lib/bootstrap/dist/css/*.min.css" /> 
+    <link rel="stylesheet" asp-href-include="lib/font-awesome/css/*.css" /> 
     <title>WawaStore</title>
 </head>
 <body>
-    <div>
+    <nav class="navbar navbar-light justify-content-between" style="background-color:indianred"> 
+         <a class="navbar-brand text-white" href="#">Wawa Store</a> 
+         <div class="float-right"> 
+            @await Component.InvokeAsync("CartSummary") 
+        </div> 
+    </nav> 
+    <div class="container"> 
+        <div class="row"> 
+            <div class="col col-md-3"> 
+                @await Component.InvokeAsync("NavigationMenu")  
+            </div> 
+            <div class="col col-md-9"> 
+    
         @RenderBody()
     </div>
+    </div> 
+    </div> 
 </body>
 </html>
