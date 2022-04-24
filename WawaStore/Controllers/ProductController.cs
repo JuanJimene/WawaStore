@@ -19,7 +19,7 @@ namespace WawaStore.Controllers
            => View(new ProductsListViewModel
             {
                 Products = repository.Products
-               .Where(p => category == null || p.Category == category)
+                         .Where(p => category == null || p.Category == category)
                          .OrderBy(p => p.ProductID)
                          .Skip((page - 1) * PageSize)
                          .Take(PageSize),
