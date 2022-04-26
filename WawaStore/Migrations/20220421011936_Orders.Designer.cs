@@ -109,6 +109,9 @@ namespace WawaStore.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("Images")
+                       .HasColumnType("nvarchar(max)");
+
                     b.HasKey("ProductID");
 
                     b.ToTable("Products");

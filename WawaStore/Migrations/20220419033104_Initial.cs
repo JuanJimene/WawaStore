@@ -15,7 +15,8 @@ namespace WawaStore.Migrations
                     Name = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
                     Price = table.Column<decimal>(nullable: false),
-                    Category = table.Column<string>(nullable: true)
+                    Category = table.Column<string>(nullable: true),
+                     Images = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
