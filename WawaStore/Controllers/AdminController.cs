@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WawaStore.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WawaStore.Controllers
 {
+    [Authorize]
     public class AdminController : Controller
     {
         private IProductRepository repository;
@@ -34,6 +36,17 @@ namespace WawaStore.Controllers
             }
         }
         public ViewResult Create() => View("Edit", new Product());
+
+        [HttpPost]
+        public IActionResult Delete(int productId)
+        {
+            Product deletedProduct = repository.DeleteProduct(productId);
+            if (deletedProduct != null)
+            {
+                TempData["message"] = $"{deletedProduct.Name} was deleted";
+            }
+            return RedirectToAction("Index");
+        }
     }
 
 }

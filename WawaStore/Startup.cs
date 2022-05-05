@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using WawaStore.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Identity;
 
 namespace WawaStore
 {
@@ -29,30 +29,34 @@ namespace WawaStore
             // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940 
         public void ConfigureServices(IServiceCollection services)
             {
-                //services.AddTransient<IProductRepository, FakeProductRepository>(); 
+            //services.AddTransient<IProductRepository, FakeProductRepository>(); 
 
-                services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-                services.AddTransient<IProductRepository, EFProductRepository>();
-                services.AddTransient<IOrderRepository, EFOrderRepository>();
-
+            services.AddDbContext<ApplicationDbContext>(options =>
+options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddTransient<IProductRepository, EFProductRepository>();
             services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddTransient<IOrderRepository, EFOrderRepository>();
 
+            services.AddIdentity<AppUser, IdentityRole<Guid>>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
             services.AddMvc(options => options.EnableEndpointRouting = false)
-                 .AddNewtonsoftJson();
-                 services.AddMemoryCache();
-                 services.AddSession();
+                .AddNewtonsoftJson();
+            services.AddMemoryCache();
+            services.AddSession();
+
         }
 
-            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    
-            public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory
     loggerFactory)
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
                 app.UseStaticFiles();
+                app.UseAuthentication();
                 app.UseSession();
                 app.UseMvc(routes => {
 
